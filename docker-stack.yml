@@ -1,0 +1,27 @@
+version: "3.2"
+
+services:
+  books-postgres:
+    image: registry.k8.wildwidewest.xyz/repository/docker-repository/books/postgres
+    ports:
+      - 5432:5432
+  books-api:
+    image: registry.k8.wildwidewest.xyz/repository/docker-repository/books/api
+    environment:
+      - spring.datasource.url=jdbc:postgresql://book-stack_books-postgres:5432/apibook
+    healthcheck:
+      test: curl -f http://localhost:8080/health || exit 1
+    depends_on:
+      - books-postgres
+    ports:
+      - 8080:8080
+  books-gui:
+    image: registry.k8.wildwidewest.xyz/repository/docker-repository/books/gui
+    environment:
+      - books_api_url=book-stack_books-api
+    depends_on:
+      - books-api
+    volumes:
+      - /home/elkouhen/dev/meltingpoc/books-gui:/usr/share/nginx/html
+    ports:
+      - 80:80
