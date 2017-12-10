@@ -22,6 +22,6 @@ services:
     depends_on:
       - books-api
     volumes:
-      - /home/elkouhen/dev/meltingpoc/books-gui:/usr/share/nginx/html
+      - $books_gui_dir:/usr/share/nginx/html
     ports:
       - 80:80
